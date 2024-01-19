@@ -1,10 +1,26 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import type {RootState} from '../store/store';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector, useDispatch} from 'react-redux';
+import {addBalance, subBalance} from '../store/accountSlice';
 import {CardView, ServiceView, TransactionHistoryView} from '../components';
 import {COLORS} from '../utils';
 
 const HomeScreen = () => {
+  const balanceNumber = useSelector(
+    (state: RootState) => state.account?.accountBalance,
+  );
+
+  const accountNumber = useSelector(
+    (state: RootState) => state.account?.accountNumber,
+  );
+  const accountName = useSelector(
+    (state: RootState) => state.account?.accountName,
+  );
+
+  console.log('balanceNumber: ', balanceNumber);
+
   return (
     <View style={styles.container}>
       <View style={styles.viewBell}>
@@ -16,9 +32,9 @@ const HomeScreen = () => {
       </View>
 
       <CardView
-        name={'Nguyen Quoc Viet'}
-        current={24999823322}
-        numberAccount={'8432112123'}
+        name={accountName}
+        current={balanceNumber}
+        numberAccount={accountNumber}
       />
       <Text
         style={{

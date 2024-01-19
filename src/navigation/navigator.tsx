@@ -43,14 +43,13 @@ function MyTabBar({state, descriptors, navigation}) {
       }}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
-        console.log('options: ', options);
+
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
             ? options.title
             : route.name;
-        console.log('route: ', route);
         const isFocused = state.index === index;
 
         const onPress = () => {

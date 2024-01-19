@@ -10,12 +10,15 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useSelector, useDispatch} from 'react-redux';
+import {addBalance, subBalance} from '../store/accountSlice';
 import {useCameraPermission} from 'react-native-vision-camera';
 
 import {COLORS} from '../utils';
 
 const ServiceView = () => {
   const {hasPermission, requestPermission} = useCameraPermission();
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const handleService = name => {
     console.log('Service Name: ', name);
@@ -29,6 +32,8 @@ const ServiceView = () => {
       } else {
         requestPermission();
       }
+    } else {
+      dispatch(addBalance(2));
     }
   };
 
