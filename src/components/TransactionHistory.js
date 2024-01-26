@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import {
   SectionList,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import moment from 'moment';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../utils';
 
@@ -23,48 +25,40 @@ function formatCurrency(numberValue) {
   return formattedString;
 }
 
-const DATA = [
-  {
-    title: '20/11/2023',
-    data: [
-      {
-        isInCome: false,
-        nameTraction: 'SHOPEEPAY JOINT STOCK',
-        amount: 2000000,
-        note: 'NAP VI SHOPEEPAY',
-      },
-      {
-        isInCome: true,
-        nameTraction: 'Incoming money',
-        amount: 300000000,
-        note: 'Thanh Toan',
-      },
-    ],
-  },
-  {
-    title: '18/11/2023',
-    data: [
-      {
-        isInCome: false,
-        nameTraction: 'SHOPEEPAY JOINT STOCK',
-        amount: 3704000,
-        note: 'NAP VI SHOPEEPAY',
-      },
-      {
-        isInCome: true,
-        nameTraction: 'Incoming money',
-        amount: 900000000,
-        note: 'Sent by me',
-      },
-    ],
-  },
-];
+const TransactionHistoryView = ({transactionData}) => {
+  const [transactionList, setTransactionList] = useState([]);
 
-const TransactionHistoryView = () => {
+  useEffect(() => {
+    // Nhóm các giao dịch theo ngày
+    const groupedTransactions = transactionData.reduce(
+      (result, transaction) => {
+        const date = moment(transaction.date, 'ddd, MMM D, YYYY h:mm A').format(
+          'YYYY-MM-DD',
+        );
+        if (!result[date]) {
+          result[date] = [];
+        }
+        result[date].push(transaction);
+        return result;
+      },
+      {},
+    );
+
+    // Chuyển đổi kết quả thành mảng các nhóm
+    const groupedTransactionsArray = Object.keys(groupedTransactions).map(
+      date => ({
+        title: date,
+        data: groupedTransactions[date],
+      }),
+    );
+    setTransactionList(groupedTransactionsArray);
+  }, []);
+
+  console.log('TransactionHistoryView transactionData: ', transactionData);
   return (
     <View style={styles.container}>
       <SectionList
-        sections={DATA}
+        sections={transactionList}
         keyExtractor={(item, index) => item + index}
         renderItem={({item}) => (
           <View style={styles.item}>

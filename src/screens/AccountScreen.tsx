@@ -5,6 +5,7 @@ const AccountScreen = () => {
   return (
     <View style={styles.container}>
       <Text>AccountScreen</Text>
+      <Text>Viet Nguyen</Text>
     </View>
   );
 };
@@ -12,6 +13,8 @@ const AccountScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

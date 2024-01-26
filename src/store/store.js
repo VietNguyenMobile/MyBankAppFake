@@ -6,6 +6,7 @@ import accountReducer from './accountSlice';
 
 const rootReducer = combineReducers({
   account: accountReducer,
+
 });
 
 const configuration: PersistConfig = {

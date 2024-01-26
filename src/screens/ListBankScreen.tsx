@@ -38,7 +38,6 @@ const BankListScreen = ({navigation}) => {
   useEffect(() => {
     const getBankList = async () => {
       try {
-        console.log('aaa');
         const response = await fetch('https://api.vietqr.io/v2/banks', {
           method: 'GET',
           headers: {
@@ -47,6 +46,7 @@ const BankListScreen = ({navigation}) => {
           },
         });
         console.log('response: ', response);
+        console.log('JSON.stringify(response): ', JSON.stringify(response));
         const jsonData = await response.json();
         setDataBank(jsonData.data);
         setIsLoading(false);

@@ -1,11 +1,13 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import type {RootState} from '../store/store';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector, useDispatch} from 'react-redux';
-import {addBalance, subBalance} from '../store/accountSlice';
+import {addBalance, subBalanc, addTransaction} from '../store/accountSlice';
 import {CardView, ServiceView, TransactionHistoryView} from '../components';
 import {COLORS} from '../utils';
+import {DATA_MOCK_TRANSACTION} from '../utils/constants';
 
 const HomeScreen = () => {
   const balanceNumber = useSelector(
@@ -19,10 +21,33 @@ const HomeScreen = () => {
     (state: RootState) => state.account?.accountName,
   );
 
-  console.log('balanceNumber: ', balanceNumber);
+  const transactionListData = useSelector(
+    (state: RootState) => state.account?.transactionData,
+  );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log('transactionListData: ', transactionListData);
+    if (transactionListData.length === 0) {
+      dispatch(
+        addTransaction({
+          transactionData: DATA_MOCK_TRANSACTION,
+          forceRefreshUpdate: true,
+        }),
+      );
+    }
+  }, []);
+
+  // const [transactionListData, setTransactionListData] = useState([]);
+
+  // console.log('transactionListData: ', transactionListData);
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{alignItems: 'center'}}>
       <View style={styles.viewBell}>
         <MaterialCommunityIcons
           name="bell-badge"
@@ -59,15 +84,15 @@ const HomeScreen = () => {
         }}>
         Transaction history
       </Text>
-      <TransactionHistoryView />
-    </View>
+      <TransactionHistoryView transactionData={transactionListData} />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    // alignItems: 'center',
     backgroundColor: COLORS.support5_08,
   },
   viewBell: {
