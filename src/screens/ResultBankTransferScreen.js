@@ -1,15 +1,31 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {COLORS, SIZES} from '../utils';
+import {useSelector, useDispatch} from 'react-redux';
+import Toast from 'react-native-toast-message';
+import {COLORS, SIZES, formatCurrency} from '../utils';
 import DashedLine from 'react-native-dashed-line';
 import {IconArrowRight} from '../components';
-import moment from 'moment/moment';
+import moment from 'moment';
+import {addBalance, subBalance, addTransaction} from '../store/accountSlice';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const ResultBankTransferScreen = ({navigation, route}) => {
-  console.log('route.params: ', route.params);
+  console.log('ResultBankTransferScreen route.params: ', route.params);
 
   const [dataTransfer, setDataTransfer] = useState(null);
+
+  const balanceNumber = useSelector(
+    (state: RootState) => state.account?.accountBalance,
+  );
+
+  const dispatch = useDispatch();
+
+  const accountNumber = useSelector(
+    (state: RootState) => state.account?.accountNumber,
+  );
+  const accountName = useSelector(
+    (state: RootState) => state.account?.accountName,
+  );
 
   useEffect(() => {
     console.log(
@@ -24,6 +40,43 @@ const ResultBankTransferScreen = ({navigation, route}) => {
 
   const onCancel = () => {
     navigation.goBack();
+  };
+
+  const handleOnClosed = () => {
+    const dateToFormat = moment();
+    const transactionDataAdd = {
+      isInCome: false,
+      nameTraction: `To ${route.params?.transferInfoData.accountName}`,
+      amount: parseInt(
+        route.params?.transferInfoData?.amount.replace(/,/g, ''),
+      ),
+      note: route.params?.transferInfoData?.note,
+      numberAccount: route.params?.transferInfoData?.accountNumber,
+      dataBank: route.params?.transferInfoData?.bankData,
+      date: dateToFormat.format('ddd, MMM D, YYYY h:mm A'),
+    };
+    console.log('transactionDataAdd: ', transactionDataAdd);
+    dispatch(
+      addTransaction({
+        transactionData: [transactionDataAdd],
+        forceRefreshUpdate: false,
+      }),
+    );
+    dispatch(
+      subBalance(
+        parseInt(route.params?.transferInfoData?.amount.replace(/,/g, '')),
+      ),
+    );
+    Toast.show({
+      type: 'successCustom',
+      text1: 'Transfer',
+      text2: `- VND ${formatCurrency(
+        transactionDataAdd.amount,
+      )} \r\nAccount: ${accountNumber}\nBalance: VND ${formatCurrency(
+        balanceNumber - transactionDataAdd.amount,
+      )}\n${transactionDataAdd.note}`,
+    });
+    navigation.navigate('HomeScreen');
   };
 
   console.log('dataTransfer: ', dataTransfer);
@@ -97,9 +150,9 @@ const ResultBankTransferScreen = ({navigation, route}) => {
           <View style={styles.itemInfo}>
             <Text style={styles.txtFrom}>FROM</Text>
             <View>
-              <Text style={styles.txtAccountName}>NGUYEN QUOC VIET</Text>
+              <Text style={styles.txtAccountName}>{accountName}</Text>
               <Text style={styles.txtBank}>MyBank</Text>
-              <Text style={styles.txtAccountNumber}>999999999</Text>
+              <Text style={styles.txtAccountNumber}>{accountNumber}</Text>
             </View>
           </View>
 
@@ -110,7 +163,9 @@ const ResultBankTransferScreen = ({navigation, route}) => {
               <Text style={styles.txtAccountName}>
                 {dataTransfer?.accountName.toUpperCase()}
               </Text>
-              <Text style={styles.txtBank}>{dataTransfer?.bankName}</Text>
+              <Text style={styles.txtBank}>
+                {dataTransfer?.bankData?.shortName}
+              </Text>
               <Text style={styles.txtAccountNumber}>
                 {dataTransfer?.accountNumber}
               </Text>
@@ -127,7 +182,7 @@ const ResultBankTransferScreen = ({navigation, route}) => {
 
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => navigation.navigate('HomeScreen')}
+          onPress={handleOnClosed}
           style={[styles.btn, {backgroundColor: COLORS.support5}]}>
           <Text
             style={{
@@ -181,7 +236,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     backgroundColor: 'white',
     elevation: 10,
-    shadowColor: 'green',
+    shadowColor: COLORS.green,
   },
   wrapperContentHeader: {
     height: 36,
@@ -190,7 +245,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopStartRadius: 10,
     borderTopEndRadius: 10,
-    backgroundColor: 'green',
+    backgroundColor: COLORS.green,
   },
   txtResult: {
     color: 'white',

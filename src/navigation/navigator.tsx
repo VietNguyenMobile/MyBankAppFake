@@ -1,6 +1,8 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Platform, StatusBar} from 'react-native';
+import Toast from 'react-native-toast-message';
+import {useSafeArea} from 'react-native-safe-area-context';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useCameraPermission} from 'react-native-vision-camera';
@@ -15,6 +17,7 @@ import ConfirmBankTransferScreen from '../screens/ConfirmBankTransferScreen';
 import OTPVerificationScreen from '../screens/OTPVerificationScreen';
 import ResultBankTransferScreen from '../screens/ResultBankTransferScreen';
 import {COLORS} from '../utils';
+import {toastConfig} from '../components/ToastConfig';
 
 const Tab = createBottomTabNavigator();
 
@@ -170,6 +173,9 @@ function MainTab() {
 const Stack = createNativeStackNavigator();
 
 const Navigator = () => {
+  const insetTop = useSafeArea().top;
+  const STATUSBAR_HEIGHT =
+    Platform.OS === 'ios' ? insetTop : StatusBar.currentHeight;
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -194,6 +200,12 @@ const Navigator = () => {
           component={ResultBankTransferScreen}
         />
       </Stack.Navigator>
+      <Toast
+        visibilityTime={4000}
+        topOffset={STATUSBAR_HEIGHT}
+        config={toastConfig}
+        position="top"
+      />
     </NavigationContainer>
   );
 };

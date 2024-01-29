@@ -12,6 +12,7 @@ const initialState: AccountState = {
   accountName: 'Nguyen Quoc Viet',
   accountNumber: '8522702123',
   transactionData: [],
+  showBalance: false,
 };
 
 const accountSlice = createSlice({
@@ -31,11 +32,15 @@ const accountSlice = createSlice({
       if (forceRefreshUpdate) {
         state.transactionData = [...transactionData];
       } else {
-        state.transactionData = [...state.transactionData, ...transactionData];
+        state.transactionData = [...transactionData, ...state.transactionData];
       }
+    },
+    toggleShowBalance: (state, action) => {
+      state.showBalance = !state.showBalance;
     },
   },
 });
 
-export const {addBalance, subBalance, addTransaction} = accountSlice.actions;
+export const {addBalance, subBalance, addTransaction, toggleShowBalance} =
+  accountSlice.actions;
 export default accountSlice.reducer;

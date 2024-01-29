@@ -8,17 +8,30 @@ import {
   TextInput,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import moment from 'moment';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useSelector, useDispatch} from 'react-redux';
-import {addBalance, subBalance} from '../store/accountSlice';
+import {addBalance, subBalance, addTransaction} from '../store/accountSlice';
 import {useCameraPermission} from 'react-native-vision-camera';
 
-import {COLORS} from '../utils';
+import {COLORS, formatCurrency} from '../utils';
 
 const ServiceView = () => {
   const {hasPermission, requestPermission} = useCameraPermission();
   const dispatch = useDispatch();
+
+  const balanceNumber = useSelector(
+    (state: RootState) => state.account?.accountBalance,
+  );
+
+  const accountNumber = useSelector(
+    (state: RootState) => state.account?.accountNumber,
+  );
+  const accountName = useSelector(
+    (state: RootState) => state.account?.accountName,
+  );
   const navigation = useNavigation();
   const handleService = name => {
     console.log('Service Name: ', name);
@@ -33,7 +46,46 @@ const ServiceView = () => {
         requestPermission();
       }
     } else {
-      dispatch(addBalance(2));
+      // dispatch(subBalance(3000000));
+      // const dateToFormat = moment();
+      // const transactionDataAdd = {
+      //   isInCome: false,
+      //   nameTraction: 'To NGUYEN QUOC VIET',
+      //   amount: 3000000,
+      //   note: 'Test Transaction',
+      //   numberAccount: '8007041110402',
+      //   dataBank: {
+      //     bin: '970436',
+      //     code: 'VCB',
+      //     id: 43,
+      //     isTransfer: 1,
+      //     logo: 'https://api.vietqr.io/img/VCB.png',
+      //     lookupSupported: 1,
+      //     name: 'Ngân hàng TMCP Ngoại Thương Việt Nam',
+      //     shortName: 'Vietcombank',
+      //     short_name: 'Vietcombank',
+      //     support: 3,
+      //     swift_code: 'BFTVVNVX',
+      //     transferSupported: 1,
+      //   },
+      //   date: dateToFormat.format('ddd, MMM D, YYYY h:mm A'),
+      // };
+      // console.log('transactionDataAdd: ', transactionDataAdd);
+      // dispatch(
+      //   addTransaction({
+      //     transactionData: [transactionDataAdd],
+      //     forceRefreshUpdate: false,
+      //   }),
+      // );
+      // Toast.show({
+      //   type: 'successCustom',
+      //   text1: 'Transfer',
+      //   text2: `- VND ${formatCurrency(
+      //     transactionDataAdd.amount,
+      //   )} \r\nAccount: ${accountNumber}\nBalance: VND ${formatCurrency(
+      //     balanceNumber - transactionDataAdd.amount,
+      //   )}\n${transactionDataAdd.note}`,
+      // });
     }
   };
 

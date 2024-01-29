@@ -4,7 +4,7 @@ import type {RootState} from '../store/store';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector, useDispatch} from 'react-redux';
-import {addBalance, subBalanc, addTransaction} from '../store/accountSlice';
+import {addBalance, subBalance, addTransaction} from '../store/accountSlice';
 import {CardView, ServiceView, TransactionHistoryView} from '../components';
 import {COLORS} from '../utils';
 import {DATA_MOCK_TRANSACTION} from '../utils/constants';
@@ -44,10 +44,7 @@ const HomeScreen = () => {
   // console.log('transactionListData: ', transactionListData);
 
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{alignItems: 'center'}}>
+    <View style={styles.container}>
       <View style={styles.viewBell}>
         <MaterialCommunityIcons
           name="bell-badge"
@@ -81,18 +78,19 @@ const HomeScreen = () => {
           marginLeft: 20,
           marginTop: 20,
           color: COLORS.support5,
+          marginBottom: 10,
         }}>
         Transaction history
       </Text>
-      <TransactionHistoryView transactionData={transactionListData} />
-    </ScrollView>
+      <TransactionHistoryView />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: 'center',
+    alignItems: 'center',
     backgroundColor: COLORS.support5_08,
   },
   viewBell: {

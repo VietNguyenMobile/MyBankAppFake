@@ -80,7 +80,7 @@ export const DATA_MOCK_TRANSACTION = [
   {
     isInCome: true,
     nameTraction: 'Incoming money',
-    date: 'Mon, Jan 15, 2024 10:36 AM',
+    date: 'Fri, Jan 19, 2024 10:36 AM',
     amount: 300000000,
     note: 'Thanh Toan',
     numberAccount: '4324324',
@@ -102,7 +102,7 @@ export const DATA_MOCK_TRANSACTION = [
   {
     isInCome: false,
     nameTraction: 'SHOPEEPAY JOINT STOCK',
-    date: 'Fri, Jan 19, 2024 10:36 AM',
+    date: 'Mon, Jan 15, 2024 10:36 AM',
     amount: 3704000,
     note: 'NAP VI SHOPEEPAY',
     numberAccount: '4324324',
@@ -124,7 +124,7 @@ export const DATA_MOCK_TRANSACTION = [
   {
     isInCome: true,
     nameTraction: 'Incoming money',
-    date: 'Fri, Jan 19, 2024 10:36 AM',
+    date: 'Mon, Jan 15, 2024 10:36 AM',
     amount: 900000000,
     note: 'Sent by me',
     numberAccount: '4324324',

@@ -227,6 +227,7 @@ const TransferScreen = ({navigation, route}) => {
         accountNumber: accountNumber,
         bankName: bankName,
         note: note,
+        bankData: bankSelected,
       },
     });
   };

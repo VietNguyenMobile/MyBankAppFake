@@ -110,3 +110,5 @@ const groupedTransactionsArray = Object.keys(groupedTransactions).map(date => ({
 }));
 
 console.log(groupedTransactionsArray);
+console.log('500,000');
+console.log(parseInt('500,000'.replace(/,/g, '')));

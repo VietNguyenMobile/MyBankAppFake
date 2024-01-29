@@ -83,6 +83,8 @@ export const COLORS = {
   shadow08: 'rgba(138, 149, 158, 0.08)',
 
   white: '#FFF',
+  green: '#23CE6B',
+  green2: '#06D6A0',
 };
 
 export const SIZES = {

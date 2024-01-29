@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {useSelector, useDispatch} from 'react-redux';
 import moment from 'moment';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../utils';
@@ -25,12 +26,16 @@ function formatCurrency(numberValue) {
   return formattedString;
 }
 
-const TransactionHistoryView = ({transactionData}) => {
+const TransactionHistoryView = ({}) => {
   const [transactionList, setTransactionList] = useState([]);
+
+  const transactionListData = useSelector(
+    (state: RootState) => state.account?.transactionData,
+  );
 
   useEffect(() => {
     // Nhóm các giao dịch theo ngày
-    const groupedTransactions = transactionData.reduce(
+    const groupedTransactions = transactionListData.reduce(
       (result, transaction) => {
         const date = moment(transaction.date, 'ddd, MMM D, YYYY h:mm A').format(
           'YYYY-MM-DD',
@@ -52,41 +57,40 @@ const TransactionHistoryView = ({transactionData}) => {
       }),
     );
     setTransactionList(groupedTransactionsArray);
-  }, []);
+  }, [transactionListData]);
 
-  console.log('TransactionHistoryView transactionData: ', transactionData);
   return (
-    <View style={styles.container}>
-      <SectionList
-        sections={transactionList}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({item}) => (
-          <View style={styles.item}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <MaterialCommunityIcons
-                name={item.isInCome ? 'bank-transfer-in' : 'bank-transfer-out'}
-                color={item.isInCome ? 'green' : COLORS.dark}
-                size={28}
-              />
-              <View style={{marginBottom: 10, marginLeft: 10}}>
-                <Text style={styles.title}>{item.nameTraction}</Text>
-                <Text style={styles.note}>{item.note}</Text>
-              </View>
+    <SectionList
+      contentContainerStyle={styles.container}
+      sections={transactionList}
+      showsVerticalScrollIndicator={false}
+      keyExtractor={(item, index) => item + index}
+      renderItem={({item}) => (
+        <View style={styles.item}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <MaterialCommunityIcons
+              name={item.isInCome ? 'bank-transfer-in' : 'bank-transfer-out'}
+              color={item.isInCome ? 'green' : COLORS.dark}
+              size={28}
+            />
+            <View style={{marginBottom: 10, marginLeft: 10}}>
+              <Text style={styles.title}>{item.nameTraction}</Text>
+              <Text style={styles.note}>{item.note}</Text>
             </View>
-            <Text
-              style={[
-                styles.amount,
-                {color: item.isInCome ? 'green' : COLORS.dark},
-              ]}>{`${item.isInCome ? '+' : '-'}${formatCurrency(
-              item.amount,
-            )}`}</Text>
           </View>
-        )}
-        renderSectionHeader={({section: {title}}) => (
-          <Text style={styles.header}>{title}</Text>
-        )}
-      />
-    </View>
+          <Text
+            style={[
+              styles.amount,
+              {color: item.isInCome ? 'green' : COLORS.dark},
+            ]}>{`${item.isInCome ? '+' : '-'}${formatCurrency(
+            item.amount,
+          )}`}</Text>
+        </View>
+      )}
+      renderSectionHeader={({section: {title}}) => (
+        <Text style={styles.header}>{title}</Text>
+      )}
+    />
   );
 };
 
@@ -98,7 +102,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     width: width,
-    marginTop: 20,
+    // marginTop: 20,
     padding: 20,
     backgroundColor: COLORS.white,
     justifyContent: 'space-between',
@@ -117,7 +121,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    color: COLORS.dark,
+    color: COLORS.primary,
     fontWeight: 'bold',
   },
   note: {

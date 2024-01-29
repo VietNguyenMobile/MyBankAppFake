@@ -1,18 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import ReactNativeBiometrics, {BiometryTypes} from 'react-native-biometrics';
-import {COLORS, SIZES, icons} from '../utils';
+import {useSelector, useDispatch} from 'react-redux';
+import {COLORS, SIZES, icons, formatCurrency} from '../utils';
+import moment from 'moment';
+import {addBalance, subBalance, addTransaction} from '../store/accountSlice';
 import {IconArrowRight, Loading} from '../components';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-export function formatCurrency(numberValue) {
-  // Convert the number to a string
-  const numberString = numberValue?.toString();
 
-  // Add commas to the string
-  const formattedString = numberString?.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-  return formattedString;
-}
 export const mockData = {
   amount: 200000000,
   accountName: 'Nguyen Quoc Viet',
@@ -22,6 +17,20 @@ export const mockData = {
 };
 
 const ConfirmBankTransferScreen = ({navigation, route}) => {
+  console.log('ConfirmBankTransferScreen route.params: ', route.params);
+  const balanceNumber = useSelector(
+    (state: RootState) => state.account?.accountBalance,
+  );
+
+  const dispatch = useDispatch();
+
+  const accountNumber = useSelector(
+    (state: RootState) => state.account?.accountNumber,
+  );
+  const accountName = useSelector(
+    (state: RootState) => state.account?.accountName,
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const [dataTransfer, setDataTransfer] = useState(null);
 
@@ -58,6 +67,32 @@ const ConfirmBankTransferScreen = ({navigation, route}) => {
 
             if (success) {
               console.log('successful biometrics provided');
+              // const dateToFormat = moment();
+              // const transactionDataAdd = {
+              //   isInCome: false,
+              //   nameTraction: `To ${route.params?.transferInfoData.accountName}`,
+              //   amount: parseInt(
+              //     route.params?.transferInfoData?.amount.replace(/,/g, ''),
+              //   ),
+              //   note: route.params?.transferInfoData?.note,
+              //   numberAccount: route.params?.transferInfoData?.accountNumber,
+              //   dataBank: route.params?.transferInfoData?.bankData,
+              //   date: dateToFormat.format('ddd, MMM D, YYYY h:mm A'),
+              // };
+              // console.log('transactionDataAdd: ', transactionDataAdd);
+              // dispatch(
+              //   addTransaction({
+              //     transactionData: [transactionDataAdd],
+              //     forceRefreshUpdate: false,
+              //   }),
+              // );
+              // dispatch(
+              //   subBalance(
+              //     parseInt(
+              //       route.params?.transferInfoData?.amount.replace(/,/g, ''),
+              //     ),
+              //   ),
+              // );
               navigation.navigate('OTPVerification', {
                 transferInfoData: route.params?.transferInfoData,
                 // transferInfoData: mockData,
@@ -107,7 +142,9 @@ const ConfirmBankTransferScreen = ({navigation, route}) => {
         <View style={styles.wrapperAvailableAmount}>
           <Text>
             <Text style={styles.txtTitleAmount}>Available to spend: </Text>
-            <Text style={styles.txtAvailableAmount}>24,999,823,322</Text>
+            <Text style={styles.txtAvailableAmount}>
+              {formatCurrency(balanceNumber)} VND
+            </Text>
           </Text>
         </View>
 

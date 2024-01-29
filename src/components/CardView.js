@@ -8,25 +8,26 @@ import {
   TextInput,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector, useDispatch} from 'react-redux';
+import type {RootState} from '../store/store';
+import {toggleShowBalance} from '../store/accountSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {COLORS} from '../utils';
-
-export function formatCurrency(numberValue) {
-  // Convert the number to a string
-  const numberString = numberValue.toString();
-
-  // Add commas to the string
-  const formattedString = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-  return formattedString;
-}
+import {COLORS, formatCurrency} from '../utils';
 
 const CardMainView = ({name, current, numberAccount}) => {
   const [isShowMoney, setIsShowMoney] = useState(true);
 
+  const showBalance = useSelector(
+    (state: RootState) => state.account?.showBalance,
+  );
+
+  console.log('showBalance: ', showBalance);
+
   const handleToggleShowMoney = () => {
-    setIsShowMoney(!isShowMoney);
+    dispatch(toggleShowBalance());
   };
+
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.container}>
@@ -45,12 +46,12 @@ const CardMainView = ({name, current, numberAccount}) => {
         <Text style={{fontSize: 14, fontWeight: '700'}}>My Balance: </Text>
         <TextInput
           style={styles.txtNumberCurrent}
-          value={`${formatCurrency(current.toString())} VND`}
-          secureTextEntry={isShowMoney}
+          value={`${formatCurrency(current)} VND`}
+          secureTextEntry={!showBalance}
         />
         <Pressable onPress={handleToggleShowMoney}>
           <Ionicons
-            name={isShowMoney ? 'eye' : 'eye-off'}
+            name={!showBalance ? 'eye' : 'eye-off'}
             size={20}
             color={COLORS.dark}
           />
