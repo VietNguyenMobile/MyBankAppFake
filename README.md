@@ -29,6 +29,8 @@
 - "redux-persist": "^6.0.0"
 - "@reduxjs/toolkit": "^2.0.1"
 
+- "react-native-code-push": "^8.2.1"
+
 ## Link Server:
 - [Server Documents VietQR](https://my.vietqr.io/lookup/account-number)
 - [Server Decode QR](https://decode-vietqr.vercel.app/decode-vietqr)
